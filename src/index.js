@@ -3,21 +3,79 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 
-const lines = [[0,1,2], [3,4,5], [6,7,8], [0,4,8], [2,4,6], [0,3,6], [1,4,7], [2,5,8]];
+const boardSize = 8;
+const winLength = 5;  // be odd for symetry --*--
+const winSides = Math.floor(winLength/2);
+
+function calculateWinOffsets() {
+  let horizontal = [];
+  let vertical = [];
+  let diagonal1 = [];
+  let diagonal2 = [];
+
+  for (let i = -winSides; i <= winSides; i++) {
+    horizontal.push(i);
+    vertical.push(i*boardSize);
+    diagonal1.push(i*boardSize + i);
+    diagonal2.push(i*boardSize - i);
+  }
+
+  return([horizontal, vertical, diagonal1, diagonal2]);
+}
+const [horizontal, vertical, diagonal1, diagonal2] = calculateWinOffsets();
+
+
+function checkOffsets(i, j, squares, offsets) {
+  let winning = true;
+  for (const offsetValue of offsets) {
+    if (squares[i*boardSize + j] !== squares[i*boardSize + j + offsetValue]) {winning = false;}
+  }
+  return(winning);
+}
 
 function calculateWinner(squares) {
-  for (let i=0; i<lines.length; i++) {
-    const [a,b,c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {return(squares[a]);}
+  for (let i=0; i<boardSize; i++) {
+    for (let j=0; j<boardSize; j++) {
+      if (squares[i*boardSize + j]) {
+        let relevantOffsets = [];
+        if (winSides <= i < (boardSize - winSides)) {relevantOffsets.push(vertical);}
+        if (winSides <= j < (boardSize - winSides)) {relevantOffsets.push(horizontal);}
+        if ((winSides <= i < (boardSize - winSides)) && (winSides <= j < (boardSize - winSides))) {
+          relevantOffsets.push(diagonal1);
+          relevantOffsets.push(diagonal2);
+        }
+        for (const offsets of relevantOffsets) {
+          if (checkOffsets(i, j, squares, offsets)) {return(squares[i*boardSize + j])}
+        }
+      }
+    }
   }
   return(null);
 }
 
 
 function getWinningSquares(squares) {
-  for (let i=0; i<lines.length; i++) {
-    const [a,b,c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {return(lines[i]);}
+  for (let i=0; i<boardSize; i++) {
+    for (let j=0; j<boardSize; j++) {
+      if (squares[i*boardSize + j]) {
+        let relevantOffsets = [];
+        if (winSides <= i < (boardSize - winSides)) {relevantOffsets.push(vertical);}
+        if (winSides <= j < (boardSize - winSides)) {relevantOffsets.push(horizontal);}
+        if ((winSides <= i < (boardSize - winSides)) && (winSides <= j < (boardSize - winSides))) {
+          relevantOffsets.push(diagonal1);
+          relevantOffsets.push(diagonal2);
+        }
+        for (const offsets of relevantOffsets) {
+          if (checkOffsets(i, j, squares, offsets)) {
+            let winningFields = [];
+            for (const offsetValue of offsets) {
+              winningFields.push(i*boardSize + j + offsetValue);
+            }
+            return(winningFields);
+          }
+        }
+      }
+    }
   }
   return(null);
 }
@@ -40,10 +98,10 @@ class Board extends React.Component {
 
   createBoard() {
     let board = [];
-    for (let i=0; i<3; i++) {
+    for (let i=0; i<boardSize; i++) {
       let squareRow = [];
-      for (let j=0; j<3; j++) {
-        squareRow.push(this.renderSquare(3*i + j));
+      for (let j=0; j<boardSize; j++) {
+        squareRow.push(this.renderSquare(boardSize*i + j));
       }
       board.push(<div key={i} className="board-row">{squareRow}</div>);
     }
@@ -66,7 +124,7 @@ class Game extends React.Component {
       stepNumber: 0,
       xIsNext: true,
       history: [
-        {squares: Array(9).fill(null)}
+        {squares: Array(boardSize**2).fill(null)}
       ]
     }
   }
@@ -98,9 +156,9 @@ class Game extends React.Component {
     const moves = history.map((step, move) => {
       let action = null;
       if (move) {
-        for (let i=0; i<9; i++) {
+        for (let i=0; i<currentSquares.length; i++) {
           if (history[move-1].squares[i] === null && history[move].squares[i] !== null) {
-            action = history[move].squares[i] + '[' + (i%3 + 1) + ', ' + Math.floor(i/3 + 1) + ']';
+            action = history[move].squares[i] + '[' + (i%boardSize + 1) + ', ' + Math.floor(i/boardSize + 1) + ']';
           }
         }        
       }

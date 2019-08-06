@@ -1,7 +1,7 @@
 .square {
   width: 4em;
   height: 4em;
-  margin: 0em;
+  margin: 0.1em;
   padding: 0em;
 }
 
@@ -10,4 +10,18 @@
   font-size: 2em;
   margin: 0em;
   padding: 0em;
+}
+
+.pes {
+  background-image: url('cumak.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.ruka {
+  background-image: url('hand.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }

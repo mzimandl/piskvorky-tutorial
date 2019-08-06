@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
 
 
@@ -82,10 +83,12 @@ function getWinningSquares(squares) {
 
 
 function Square(props) {
+  let imageClass = "";
+  if (props.value === "X") {imageClass = "pes"}
+  else if (props.value === "O") {imageClass = "ruka"}
+
   return (
-    <button className='square' onClick={props.onClick} style={props.style}>
-      <p className='button-text'>{'\u00A0'}{props.value}{'\u00A0'}</p>
-    </button>
+    <div className={"col square btn " + props.class + " " + imageClass} onClick={props.onClick}></div>
   )
 }
 
@@ -93,7 +96,7 @@ function Square(props) {
 class Board extends React.Component {
   
   renderSquare(i) {
-    return (<Square key={i} value={this.props.squares[i]} style={this.props.winningSquares.includes(i) ? {backgroundColor: "red", color: "white"} : {backgroundColor: "white"}} onClick={() => (this.props.onClick(i))}/>);
+    return (<Square key={i} value={this.props.squares[i]} class={this.props.winningSquares.includes(i) ? "btn-primary" : "btn-outline-primary"} onClick={() => (this.props.onClick(i))}/>);
   }
 
   createBoard() {
@@ -103,7 +106,7 @@ class Board extends React.Component {
       for (let j=0; j<boardSize; j++) {
         squareRow.push(this.renderSquare(boardSize*i + j));
       }
-      board.push(<div key={i} className="board-row">{squareRow}</div>);
+      board.push(<div key={i} className="row">{squareRow}</div>);
     }
     return board
   }
@@ -186,10 +189,10 @@ class Game extends React.Component {
 
     return (
       <div>
-        <div className="status"><h3>{status}</h3></div>
-        <div className='game-board'>
+        <div className='container-fluid'>
           <Board onClick={(i) => (this.handleClick(i))} squares={currentSquares} winningSquares={winningSquares}/>
         </div>
+        <div className="status"><h3>{status}</h3></div>
         <div className='game-info'>
           <button onClick={() => (this.setState({reversedHistory: !this.state.reversedHistory}))}>Reverse history</button><br /><br />
           {this.state.reversedHistory ? moves.reverse() : moves}

@@ -88,7 +88,7 @@ function Square(props) {
   else if (props.value === "O") {imageClass = "ruka"}
 
   return (
-    <div className={"col square btn " + props.class + " " + imageClass} onClick={props.onClick}></div>
+    <div className={"col square btn " + props.class + " " + imageClass} onClick={props.onClick} style={{height: innerHeight/(boardSize + 1) + "px"}}></div>
   )
 }
 
@@ -179,12 +179,12 @@ class Game extends React.Component {
     let status;
     let winningSquares = [];
     if (winner) {
-      status = 'Winner: ' + winner;
+      status = 'Vyhrál: ' + (winner ? 'Psí čumák' : 'Tišmajstr');
       winningSquares = getWinningSquares(currentSquares);
     } else if (!currentSquares.includes(null)) {
-      status = 'This is a draw!';
+      status = 'Remíza!';
     } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      status = 'Hraje: ' + (this.state.xIsNext ? 'Psí čumák' : 'Tišmajstr');
     }
 
     return (
@@ -194,8 +194,8 @@ class Game extends React.Component {
         </div>
         <div className="status"><h3>{status}</h3></div>
         <div className='game-info'>
-          <button onClick={() => (this.setState({reversedHistory: !this.state.reversedHistory}))}>Reverse history</button><br /><br />
           {this.state.reversedHistory ? moves.reverse() : moves}
+          <button onClick={() => (this.setState({reversedHistory: !this.state.reversedHistory}))}>Reverse history</button><br /><br />
         </div>
       </div>
     ); 

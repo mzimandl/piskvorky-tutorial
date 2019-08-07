@@ -34,17 +34,24 @@ function checkOffsets(i, j, squares, offsets) {
   return(winning);
 }
 
+
+function getRelevantOffsets(i, j) {
+  let relevantOffsets = [];
+  if (winSides <= i < (boardSize - winSides)) {relevantOffsets.push(vertical);}
+  if (winSides <= j < (boardSize - winSides)) {relevantOffsets.push(horizontal);}
+  if ((winSides <= i < (boardSize - winSides)) && (winSides <= j < (boardSize - winSides))) {
+    relevantOffsets.push(diagonal1);
+    relevantOffsets.push(diagonal2);
+  }
+  return(relevantOffsets);
+}
+
+
 function calculateWinner(squares) {
   for (let i=0; i<boardSize; i++) {
     for (let j=0; j<boardSize; j++) {
       if (squares[i*boardSize + j]) {
-        let relevantOffsets = [];
-        if (winSides <= i < (boardSize - winSides)) {relevantOffsets.push(vertical);}
-        if (winSides <= j < (boardSize - winSides)) {relevantOffsets.push(horizontal);}
-        if ((winSides <= i < (boardSize - winSides)) && (winSides <= j < (boardSize - winSides))) {
-          relevantOffsets.push(diagonal1);
-          relevantOffsets.push(diagonal2);
-        }
+        const relevantOffsets = getRelevantOffsets(i, j);
         for (const offsets of relevantOffsets) {
           if (checkOffsets(i, j, squares, offsets)) {return(squares[i*boardSize + j])}
         }
@@ -59,13 +66,7 @@ function getWinningSquares(squares) {
   for (let i=0; i<boardSize; i++) {
     for (let j=0; j<boardSize; j++) {
       if (squares[i*boardSize + j]) {
-        let relevantOffsets = [];
-        if (winSides <= i < (boardSize - winSides)) {relevantOffsets.push(vertical);}
-        if (winSides <= j < (boardSize - winSides)) {relevantOffsets.push(horizontal);}
-        if ((winSides <= i < (boardSize - winSides)) && (winSides <= j < (boardSize - winSides))) {
-          relevantOffsets.push(diagonal1);
-          relevantOffsets.push(diagonal2);
-        }
+        const relevantOffsets = getRelevantOffsets(i, j);
         for (const offsets of relevantOffsets) {
           if (checkOffsets(i, j, squares, offsets)) {
             let winningFields = [];

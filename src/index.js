@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Container, Row, Col, Button, ButtonGroup, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
 
@@ -85,11 +86,11 @@ function getWinningSquares(squares) {
 
 function Square(props) {
   let imageClass = "";
-  if (props.value === "X") {imageClass = "pes"}
-  else if (props.value === "O") {imageClass = "ruka"}
+  if (props.value === "X") {imageClass = " pes"}
+  else if (props.value === "O") {imageClass = " ruka"}
 
   return (
-    <div className={"col square btn " + props.class + " " + imageClass} onClick={props.onClick} style={{height: innerHeight/(boardSize + 1) + "px"}}></div>
+    <Col className={"square btn " + props.class + imageClass} onClick={props.onClick} style={{height: innerHeight/(boardSize + 1) + "px"}}></Col>
   )
 }
 
@@ -107,15 +108,13 @@ class Board extends React.Component {
       for (let j=0; j<boardSize; j++) {
         squareRow.push(this.renderSquare(boardSize*i + j));
       }
-      board.push(<div key={i} className="row">{squareRow}</div>);
+      board.push(<Row>{squareRow}</Row>);
     }
     return board
   }
 
   render() {
-    return (
-      <div>{this.createBoard()}</div>
-    )
+    return (<Container fluid={true}>{this.createBoard()}</Container>)
   }
 }
 
@@ -124,7 +123,8 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      reversedHistory: false,
+      historyOpen: false,
+      reversedHistory: true,
       stepNumber: 0,
       xIsNext: true,
       history: [
@@ -167,13 +167,11 @@ class Game extends React.Component {
         }        
       }
 
-      const desc = move ? 'Go to move #' + move + ': ' + action : 'Go to game start';
+      const desc = move ? 'Tah #' + move + ': ' + action : 'Začátek hry';
       return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)} style={this.state.stepNumber === move ? {fontWeight: "bold"} : {fontWeight: "normal"}}>
-            {desc}
-          </button>
-        </li>
+        <DropdownItem key={move} onClick={() => this.jumpTo(move)} active={this.state.stepNumber === move ? true : false}>
+          {desc}
+        </DropdownItem>
       );
     });
 
@@ -189,16 +187,25 @@ class Game extends React.Component {
     }
 
     return (
-      <div>
-        <div className='container-fluid'>
-          <Board onClick={(i) => (this.handleClick(i))} squares={currentSquares} winningSquares={winningSquares}/>
-        </div>
-        <div className="status"><h3>{status}</h3></div>
-        <div className='game-info'>
-          {this.state.reversedHistory ? moves.reverse() : moves}
-          <button onClick={() => (this.setState({reversedHistory: !this.state.reversedHistory}))}>Reverse history</button><br /><br />
-        </div>
-      </div>
+      <Container fluid={true}>
+        <Board onClick={(i) => (this.handleClick(i))} squares={currentSquares} winningSquares={winningSquares}/>
+        <Row>
+          <Col>
+            <ButtonGroup>
+              <Button onClick={() => this.jumpTo(0)}>Nová hra</Button>
+              <ButtonDropdown direction="up" isOpen={this.state.historyOpen} toggle={() => (this.setState({historyOpen: !this.state.historyOpen}))}>
+                <DropdownToggle caret>Historie</DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem onClick={() => (this.setState({reversedHistory: !this.state.reversedHistory}))}>Obrátit pořadí</DropdownItem>
+                  <DropdownItem divider/>
+                  {this.state.reversedHistory ? moves.reverse() : moves}
+                </DropdownMenu>
+              </ButtonDropdown>
+              <Button disabled>{status}</Button>
+            </ButtonGroup>
+          </Col>
+        </Row>
+      </Container>
     ); 
   }
 }

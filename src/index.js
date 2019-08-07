@@ -190,18 +190,18 @@ class Game extends React.Component {
       <Container fluid={true}>
         <Board onClick={(i) => (this.handleClick(i))} squares={currentSquares} winningSquares={winningSquares}/>
         <Row>
-          <Col>
+          <Col className='d-flex'>
             <ButtonGroup>
-              <Button onClick={() => this.jumpTo(0)}>Nová hra</Button>
-              <ButtonDropdown direction="up" isOpen={this.state.historyOpen} toggle={() => (this.setState({historyOpen: !this.state.historyOpen}))}>
-                <DropdownToggle caret>Historie</DropdownToggle>
+              <Button color='info' className='arrow' onClick={() => this.jumpTo(0)}>&nbsp;&nbsp;&nbsp;&nbsp;</Button>
+              <ButtonDropdown color='info' direction="up" isOpen={this.state.historyOpen} toggle={() => (this.setState({historyOpen: !this.state.historyOpen}))}>
+                <DropdownToggle color='info' caret>Historie</DropdownToggle>
                 <DropdownMenu>
                   <DropdownItem onClick={() => (this.setState({reversedHistory: !this.state.reversedHistory}))}>Obrátit pořadí</DropdownItem>
                   <DropdownItem divider/>
                   {this.state.reversedHistory ? moves.reverse() : moves}
                 </DropdownMenu>
               </ButtonDropdown>
-              <Button disabled>{status}</Button>
+              <Button color='info' disabled>{status}</Button>
             </ButtonGroup>
           </Col>
         </Row>

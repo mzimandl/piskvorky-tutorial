@@ -1,8 +1,5 @@
 .square {
-  width: 4em;
-  height: 4em;
   margin: 1px;
-  padding: 0em;
 }
 
 .pes {
@@ -14,6 +11,13 @@
 
 .ruka {
   background-image: url('hand.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.arrow {
+  background-image: url('arrow.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;

@@ -90,7 +90,7 @@ function Square(props) {
   else if (props.value === "O") {imageClass = " ruka"}
 
   return (
-    <Col className={"square btn " + props.class + imageClass} onClick={props.onClick} style={{height: innerHeight/(boardSize + 1) + "px"}}></Col>
+    <Col className={"square btn " + props.class + imageClass} onClick={props.onClick} style={{height: innerHeight/(boardSize + 1.2) + "px"}}></Col>
   )
 }
 
